@@ -44,26 +44,41 @@ const history: string[] = [];
 export async function generateResponseWithImage({
   imageBuffer,
   mimeType,
-  size = 'sm'
+  size = 'short',
+  tone,
+  prompt,
+  hashtags = 3
 }: {
   imageBuffer: Buffer;
   mimeType: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'short' | 'medium' | 'long';
+  tone?: string;
+  prompt?: string;
+  hashtags?: number;
 }) {
   const sizeMap = {
-    sm: '5',
-    md: '10',
-    lg: '15'
+    short: '5',
+    medium: '10',
+    long: '20'
   };
 
   let systemPrompt = `You are an AI specialized in generating short, catchy Instagram captions. 
   Each response must contain exactly one caption in the format:
 
  <caption here>
-  #hashtag1 #hashtag2 #hashtag3
+ 
+  #hashtag
+  #hashtag
+  #hashtag
+  #hashtag
+  #hashtag
 
   Do not include any other text, explanations, or greetings. Ensure the captions are engaging, concise, include relevant hashtags.
   caption should be approximately ${sizeMap[size]} words long excluding hashtags.
+  Make sure to include emojis in the caption.
+  The caption should be in ${tone} tone.
+  ${prompt ? `Prompt: ${prompt}` : ''}
+  ${hashtags ? `Include ${hashtags} hashtags` : ''}
   `;
 
   const imagePart = {

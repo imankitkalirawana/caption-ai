@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils';
-import { Button } from '@heroui/react';
+import { Button, Image } from '@heroui/react';
 import { UploadIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import type { DropEvent, DropzoneOptions, FileRejection } from 'react-dropzone';
 
@@ -83,7 +83,7 @@ export const Dropzone = ({
         type="button"
         disabled={disabled}
         className={cn(
-          'relative flex h-auto w-full flex-col items-center overflow-hidden rounded-3xl bg-default-200 p-8',
+          'relative flex h-auto w-full flex-col items-center overflow-hidden rounded-3xl pb-4',
           isDragActive && 'ring-ring outline-none ring-1',
           className
         )}
@@ -114,6 +114,13 @@ const maxLabelItems = 3;
 
 export const DropzoneContent = ({ children }: DropzoneContentProps) => {
   const { src } = useDropzoneContext();
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (src) {
+      setPreview(URL.createObjectURL(src[0]));
+    }
+  }, [src]);
 
   if (!src) {
     return null;
@@ -125,19 +132,30 @@ export const DropzoneContent = ({ children }: DropzoneContentProps) => {
 
   return (
     <>
-      <div className="bg-muted text-muted-foreground flex size-8 items-center justify-center rounded-md">
-        <UploadIcon size={16} />
-      </div>
-      <p className="my-2 w-full truncate text-sm font-medium">
-        {src.length > maxLabelItems
-          ? `${new Intl.ListFormat('en').format(
-              src.slice(0, maxLabelItems).map((file) => file.name)
-            )} and ${src.length - maxLabelItems} more`
-          : new Intl.ListFormat('en').format(src.map((file) => file.name))}
-      </p>
-      <p className="text-muted-foreground w-full text-xs">
-        Drag and drop or click to replace
-      </p>
+      {preview ? (
+        <Image
+          src={preview}
+          alt="Preview"
+          className="aspect-[2/1] h-full max-h-72 w-full object-cover"
+          radius="lg"
+        />
+      ) : (
+        <>
+          <div className="bg-muted text-muted-foreground flex size-8 items-center justify-center rounded-md">
+            <UploadIcon size={16} />
+          </div>
+          <p className="my-2 w-full truncate text-sm font-medium">
+            {src.length > maxLabelItems
+              ? `${new Intl.ListFormat('en').format(
+                  src.slice(0, maxLabelItems).map((file) => file.name)
+                )} and ${src.length - maxLabelItems} more`
+              : new Intl.ListFormat('en').format(src.map((file) => file.name))}
+          </p>
+          <p className="text-muted-foreground w-full text-xs">
+            Drag and drop or click to replace
+          </p>
+        </>
+      )}
     </>
   );
 };

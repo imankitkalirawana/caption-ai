@@ -8,6 +8,8 @@ export const POST = auth(async function POST(request: any) {
   try {
     const formData = await request.formData();
     const size = formData.get('size');
+    const tone = formData.get('tone');
+    const prompt = formData.get('prompt');
     const image = formData.get('image');
 
     let response;
@@ -18,7 +20,10 @@ export const POST = auth(async function POST(request: any) {
         const mimeType = image.type || 'image/jpeg';
         response = await generateResponseWithImage({
           imageBuffer: buffer,
-          mimeType
+          mimeType,
+          size,
+          tone,
+          prompt
         });
       } else {
         return NextResponse.json(
@@ -27,10 +32,7 @@ export const POST = auth(async function POST(request: any) {
         );
       }
     } else {
-      return NextResponse.json(
-        { error: 'No message or image provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No image provided' }, { status: 400 });
     }
 
     return NextResponse.json({ response });
