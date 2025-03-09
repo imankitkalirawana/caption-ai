@@ -1,77 +1,31 @@
 'use client';
 
-import {
-  addToast,
-  Button,
-  Card,
-  CardBody,
-  Input,
-  Select,
-  SelectItem,
-  Snippet,
-  Tab,
-  Tabs,
-  Tooltip
-} from '@heroui/react';
-import {
-  Dropzone,
-  DropzoneContent,
-  DropzoneEmptyState
-} from '@/components/ui/dropzone';
-import { useFormik } from 'formik';
+import { Card, CardBody, Tab, Tabs } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { CAPTION_CONFIG } from '@/lib/config';
-import axios from 'axios';
 import React from 'react';
 import { usePathname } from 'next/navigation';
+import { CaptionProvider } from '@/components/caption/context';
 
-// Define the type for Formik values
-interface FormValues {
-  image: File | null;
-  preview: string | null;
-  tone: string;
-  response: string | null;
-  regenerateCount: number;
-  size: string;
-  prompt: string;
-}
+export default function Layout({ children }: { children: React.ReactNode }) {
+  let pathname = usePathname();
 
-export default function Page() {
-  const pathname = usePathname();
-
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      image: null,
-      preview: null,
-      tone: 'casual',
-      response: null,
-      regenerateCount: 0,
-      size: 'short',
-      prompt: ''
+  const tabs = [
+    {
+      href: '/caption/instagram',
+      title: 'Instagram',
+      icon: 'skill-icons:instagram'
     },
-
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      if (values.image) formData.append('image', values.image);
-      formData.append('tone', values.tone);
-      formData.append('size', values.size);
-      values.prompt && formData.append('prompt', values.prompt);
-
-      await axios
-        .post('/api/chatbot', formData)
-        .then((res) => {
-          formik.setFieldValue('response', res.data.response);
-          formik.setFieldValue('regenerateCount', values.regenerateCount + 1);
-        })
-        .catch((err) => {
-          console.error('Error in chat submission:', err);
-          addToast({
-            title: err.response.data.error,
-            color: 'danger'
-          });
-        });
+    {
+      href: '/caption/linkedin',
+      title: 'LinkedIn',
+      icon: 'skill-icons:linkedin'
+    },
+    {
+      href: '/caption/twitter',
+      title: 'Twitter',
+      icon: 'skill-icons:twitter'
     }
-  });
+  ];
 
   return (
     <div className="relative flex h-screen w-full items-center justify-center px-4">
@@ -80,159 +34,38 @@ export default function Page() {
 
       <Card className="w-full max-w-lg bg-default-200/40 shadow-none backdrop-blur-lg">
         <CardBody className="p-2">
-          <Tabs
-            aria-label="Options"
-            classNames={{
-              panel: 'p-0 shadow-none',
-              tabList: 'p-0 gap-[1px] bg-transparent rounded-none',
-              cursor:
-                'rounded-b-none rounded-t-xl border-b border-default-300/40 shadow-none',
-              tab: 'rounded-b-none data-[selected=true]:border-none data-[selected=true]:bg-transparent bg-default-200/40 rounded-t-xl backdrop-blur-lg'
-            }}
-            size="lg"
-            selectedKey={pathname}
-          >
-            <Tab
-              href="/instagram"
-              key="instagram"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:instagram" />
-                  <span>Instagram</span>
-                </div>
-              }
+          <CaptionProvider>
+            <Tabs
+              aria-label="Options"
+              classNames={{
+                panel: 'p-0 shadow-none',
+                tabList: 'p-0 gap-[1px] bg-transparent rounded-none',
+                cursor:
+                  'rounded-b-none rounded-t-xl border-b border-default-300/40 shadow-none',
+                tab: 'rounded-b-none data-[selected=true]:border-none data-[selected=true]:bg-transparent bg-default-200/40 rounded-t-xl backdrop-blur-lg'
+              }}
+              size="lg"
+              selectedKey={pathname}
+              items={tabs}
             >
-              <div className="rounded-b-xl rounded-tr-xl bg-gradient-to-b from-background to-background/30 p-4 backdrop-blur-lg">
-                <Dropzone
-                  maxSize={1024 * 1024 * 10}
-                  maxFiles={1}
-                  accept={{ 'image/*': [] }}
-                  onDrop={(files) => {
-                    formik.setFieldValue('image', files[0]);
-                    formik.setFieldValue(
-                      'preview',
-                      URL.createObjectURL(files[0])
-                    );
-                  }}
-                  src={formik.values.image ? [formik.values.image] : undefined}
-                  onError={console.error}
-                >
-                  <DropzoneEmptyState />
-                  <DropzoneContent />
-                </Dropzone>
-                {formik.values.image && (
-                  <>
-                    <Input
-                      aria-label="Prompt"
-                      variant="bordered"
-                      placeholder="Enter a prompt (Optional)"
-                      size="lg"
-                      radius="full"
-                      value={formik.values.prompt}
-                      onChange={formik.handleChange}
-                      name="prompt"
-                    />
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex w-full gap-2">
-                        <Select
-                          aria-label="Tone"
-                          className="max-w-36"
-                          items={CAPTION_CONFIG.instagram.tones}
-                          onChange={formik.handleChange}
-                          name="tone"
-                          value={formik.values.tone}
-                          defaultSelectedKeys={['casual']}
-                          variant="bordered"
-                          radius="full"
-                        >
-                          {(item) => (
-                            <SelectItem key={item.key} textValue={item.label}>
-                              {item.label}
-                            </SelectItem>
-                          )}
-                        </Select>
-                        <Select
-                          aria-label="Size"
-                          className="max-w-36"
-                          items={CAPTION_CONFIG.instagram.size}
-                          onChange={formik.handleChange}
-                          name="size"
-                          value={formik.values.size}
-                          defaultSelectedKeys={['short']}
-                          variant="bordered"
-                          radius="full"
-                        >
-                          {(item) => (
-                            <SelectItem key={item.key} textValue={item.label}>
-                              {item.label}
-                            </SelectItem>
-                          )}
-                        </Select>
-                      </div>
-                      <Tooltip
-                        content={
-                          formik.values.regenerateCount > 0
-                            ? 'Regenerate'
-                            : 'Generate'
-                        }
-                      >
-                        <Button
-                          variant="solid"
-                          radius="full"
-                          isIconOnly
-                          className="bg-foreground text-background"
-                          onPress={() => formik.handleSubmit()}
-                          isLoading={formik.isSubmitting}
-                        >
-                          <Icon
-                            icon={
-                              formik.values.regenerateCount > 0
-                                ? 'solar:refresh-bold'
-                                : 'line-md:arrow-up'
-                            }
-                            width={20}
-                          />
-                        </Button>
-                      </Tooltip>
+              {(tab) => (
+                <Tab
+                  href={tab.href}
+                  key={tab.href}
+                  title={
+                    <div className="flex items-center space-x-2">
+                      <Icon icon={tab.icon} />
+                      <span>{tab.title}</span>
                     </div>
-                  </>
-                )}
-                {formik.values.response && (
-                  <Snippet symbol="" className="mt-4 w-full">
-                    <p className="whitespace-pre-wrap">
-                      {formik.values.response}
-                    </p>
-                  </Snippet>
-                )}
-              </div>
-            </Tab>
-            <Tab
-              key="linkedin"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:linkedin" />
-                  <span>LinkedIn</span>
-                </div>
-              }
-            >
-              <div className="min-h-36 rounded-b-xl rounded-tr-xl bg-background p-4">
-                Coming Soon...
-              </div>
-            </Tab>
-            <Tab
-              key="twitter"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:twitter" />
-                  <span>Twitter</span>
-                </div>
-              }
-            >
-              <div className="min-h-36 rounded-b-xl rounded-tr-xl bg-background p-4">
-                Coming Soon...
-              </div>
-            </Tab>
-          </Tabs>
+                  }
+                >
+                  <div className="min-h-36 rounded-b-xl rounded-tr-xl bg-gradient-to-b from-background to-background/30 p-4 backdrop-blur-lg">
+                    {children}
+                  </div>
+                </Tab>
+              )}
+            </Tabs>
+          </CaptionProvider>
         </CardBody>
       </Card>
     </div>
