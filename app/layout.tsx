@@ -3,6 +3,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import Sonner from '@/components/providers';
 import { Providers } from './providers';
+import Navbar from '@/components/navbar';
 
 export const metadata: Metadata = {
   title: 'Caption AI',
@@ -41,6 +42,7 @@ export default async function RootLayout({
       <body>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="light">
+            <Navbar />
             {children}
             <Sonner />
           </ThemeProvider>

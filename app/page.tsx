@@ -1,85 +1,31 @@
 'use client';
-import { Button, Link } from '@heroui/react';
+import { Button, Chip, Link } from '@heroui/react';
+import { Icon } from '@iconify/react/dist/iconify.js';
 import React from 'react';
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <header className="border-b border-white/10">
-        <div className="container mx-auto">
-          <nav className="flex h-16 items-center justify-between px-6">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-white/10">
-                <span className="font-medium">D</span>
-              </div>
-              <span className="font-medium">Doly</span>
-            </Link>
-
-            {/* Navigation Links */}
-            <div className="hidden items-center gap-8 md:flex">
-              <Link
-                href="/"
-                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
-              >
-                Home
-              </Link>
-              <Link
-                href="/solutions"
-                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
-              >
-                Solutions
-              </Link>
-              <Link
-                href="/pricing"
-                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/resources"
-                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
-              >
-                Resources
-              </Link>
-            </div>
-
-            <Button className="rounded-full bg-primary px-6 text-sm font-medium text-black hover:bg-primary/90">
-              Get Started
-            </Button>
-          </nav>
-        </div>
-      </header>
-
-      {/* Hero Section */}
+    <div className="min-h-screen bg-background text-foreground">
       <main className="relative">
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            backgroundImage:
-              'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-30%20at%2011.13.42%20AM-7iNXJBsE61P0bXhGM8nrEl2tT6HuP5.png")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        />
         <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl space-y-8 py-16 text-center md:py-24">
-            {/* New badge */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm">
-              <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-black">
-                New
-              </span>
+          <div className="mx-auto max-w-3xl space-y-8 py-16 pt-24 text-center md:py-24">
+            <Button
+              as={Link}
+              href="https://store.divinely.dev"
+              target="_blank"
+              className="inline-flex items-center gap-2 rounded-full bg-default-100 px-4 py-1.5 pl-1.5 text-sm transition-colors hover:bg-default-200"
+            >
+              <Chip color="primary">New</Chip>
               <span className="flex items-center gap-2">
-                Introducing hosting: Our new, most advanced Web3 hosting
-                solution
+                Introducing Divinely Store: One stop to for all your design &
+                development needs.
                 <svg
                   width="16"
                   height="16"
                   viewBox="0 0 16 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="text-white"
+                  className="text-foreground"
                 >
                   <path
                     d="M6 12L10 8L6 4"
@@ -90,43 +36,48 @@ export default function Page() {
                   />
                 </svg>
               </span>
-            </div>
+            </Button>
 
-            {/* Hero content */}
             <div className="space-y-6">
               <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
-                Web3 Hosting
+                Caption AI
                 <br />
-                Made Simple
+                by{' '}
+                <a
+                  href="https://divinely.dev"
+                  className="transition-all hover:text-primary"
+                  target="_blank"
+                >
+                  divinely
+                  <span className="text-primary">.dev</span>
+                </a>
               </h1>
-              <p className="text-lg text-gray-400">
-                No more complicated setups. Just fast, secure Web3 hosting.
+              <p className="text-lg text-default-500">
+                Generate captions for your images in seconds.
               </p>
-              <Button className="rounded-full bg-primary px-8 text-black hover:bg-primary/90">
-                Get Started
-              </Button>
+              <div className="flex justify-center gap-2">
+                <Button
+                  color="primary"
+                  as={Link}
+                  href="/caption/instagram"
+                  radius="full"
+                >
+                  Get Started
+                </Button>
+                <Button
+                  variant="flat"
+                  as={Link}
+                  href="https://github.com/imankitkalirawana/caption-ai"
+                  target="_blank"
+                  radius="full"
+                  isIconOnly
+                >
+                  <Icon icon="mdi:github" width={20} />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <style jsx>{`
-          @keyframes glow {
-            0% {
-              text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            }
-            50% {
-              text-shadow:
-                0 0 10px rgba(255, 255, 255, 0.7),
-                0 0 15px rgba(255, 255, 255, 0.5);
-            }
-            100% {
-              text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            }
-          }
-
-          .hover\\:glow:hover {
-            animation: glow 1.5s ease-in-out infinite;
-          }
-        `}</style>
       </main>
     </div>
   );
