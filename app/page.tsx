@@ -1,240 +1,133 @@
 'use client';
-
-import {
-  addToast,
-  Button,
-  Card,
-  CardBody,
-  Input,
-  Select,
-  SelectItem,
-  Snippet,
-  Tab,
-  Tabs,
-  Tooltip
-} from '@heroui/react';
-import {
-  Dropzone,
-  DropzoneContent,
-  DropzoneEmptyState
-} from '@/components/ui/dropzone';
-import { useFormik } from 'formik';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { CAPTION_CONFIG } from '@/lib/config';
-import axios from 'axios';
+import { Button, Link } from '@heroui/react';
 import React from 'react';
-import { usePathname } from 'next/navigation';
-
-// Define the type for Formik values
-interface FormValues {
-  image: File | null;
-  preview: string | null;
-  tone: string;
-  response: string | null;
-  regenerateCount: number;
-  size: string;
-  prompt: string;
-}
 
 export default function Page() {
-  const pathname = usePathname();
-
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      image: null,
-      preview: null,
-      tone: 'casual',
-      response: null,
-      regenerateCount: 0,
-      size: 'short',
-      prompt: ''
-    },
-
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      if (values.image) formData.append('image', values.image);
-      formData.append('tone', values.tone);
-      formData.append('size', values.size);
-      values.prompt && formData.append('prompt', values.prompt);
-
-      await axios
-        .post('/api/chatbot', formData)
-        .then((res) => {
-          formik.setFieldValue('response', res.data.response);
-          formik.setFieldValue('regenerateCount', values.regenerateCount + 1);
-        })
-        .catch((err) => {
-          console.error('Error in chat submission:', err);
-          addToast({
-            title: err.response.data.error,
-            color: 'danger'
-          });
-        });
-    }
-  });
-
   return (
-    <div className="relative flex h-screen w-full items-center justify-center px-4">
-      <div className="absolute inset-0 left-[30%] top-[40%] size-64 bg-green-400 bg-[size:20px_20px] opacity-50 blur-[100px]"></div>
-      <div className="absolute inset-0 left-[50%] top-1/2 size-64 bg-fuchsia-400 bg-[size:20px_20px] opacity-50 blur-[100px]"></div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Navigation */}
+      <header className="border-b border-white/10">
+        <div className="container mx-auto">
+          <nav className="flex h-16 items-center justify-between px-6">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-white/10">
+                <span className="font-medium">D</span>
+              </div>
+              <span className="font-medium">Doly</span>
+            </Link>
 
-      <Card className="w-full max-w-lg bg-default-200/40 shadow-none backdrop-blur-lg">
-        <CardBody className="p-2">
-          <Tabs
-            aria-label="Options"
-            classNames={{
-              panel: 'p-0 shadow-none',
-              tabList: 'p-0 gap-[1px] bg-transparent rounded-none',
-              cursor:
-                'rounded-b-none rounded-t-xl border-b border-default-300/40 shadow-none',
-              tab: 'rounded-b-none data-[selected=true]:border-none data-[selected=true]:bg-transparent bg-default-200/40 rounded-t-xl backdrop-blur-lg'
-            }}
-            size="lg"
-            selectedKey={pathname}
-          >
-            <Tab
-              href="/instagram"
-              key="instagram"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:instagram" />
-                  <span>Instagram</span>
-                </div>
-              }
-            >
-              <div className="rounded-b-xl rounded-tr-xl bg-gradient-to-b from-background to-background/30 p-4 backdrop-blur-lg">
-                <Dropzone
-                  maxSize={1024 * 1024 * 10}
-                  maxFiles={1}
-                  accept={{ 'image/*': [] }}
-                  onDrop={(files) => {
-                    formik.setFieldValue('image', files[0]);
-                    formik.setFieldValue(
-                      'preview',
-                      URL.createObjectURL(files[0])
-                    );
-                  }}
-                  src={formik.values.image ? [formik.values.image] : undefined}
-                  onError={console.error}
+            {/* Navigation Links */}
+            <div className="hidden items-center gap-8 md:flex">
+              <Link
+                href="/"
+                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
+              >
+                Home
+              </Link>
+              <Link
+                href="/solutions"
+                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
+              >
+                Solutions
+              </Link>
+              <Link
+                href="/pricing"
+                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/resources"
+                className="hover:glow text-sm text-white/80 transition-colors hover:text-white"
+              >
+                Resources
+              </Link>
+            </div>
+
+            <Button className="rounded-full bg-primary px-6 text-sm font-medium text-black hover:bg-primary/90">
+              Get Started
+            </Button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="relative">
+        <div
+          className="absolute inset-0 -z-10"
+          style={{
+            backgroundImage:
+              'url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-30%20at%2011.13.42%20AM-7iNXJBsE61P0bXhGM8nrEl2tT6HuP5.png")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        />
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-3xl space-y-8 py-16 text-center md:py-24">
+            {/* New badge */}
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm">
+              <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-black">
+                New
+              </span>
+              <span className="flex items-center gap-2">
+                Introducing hosting: Our new, most advanced Web3 hosting
+                solution
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-white"
                 >
-                  <DropzoneEmptyState />
-                  <DropzoneContent />
-                </Dropzone>
-                {formik.values.image && (
-                  <>
-                    <Input
-                      aria-label="Prompt"
-                      variant="bordered"
-                      placeholder="Enter a prompt (Optional)"
-                      size="lg"
-                      radius="full"
-                      value={formik.values.prompt}
-                      onChange={formik.handleChange}
-                      name="prompt"
-                    />
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex w-full gap-2">
-                        <Select
-                          aria-label="Tone"
-                          className="max-w-36"
-                          items={CAPTION_CONFIG.instagram.tones}
-                          onChange={formik.handleChange}
-                          name="tone"
-                          value={formik.values.tone}
-                          defaultSelectedKeys={['casual']}
-                          variant="bordered"
-                          radius="full"
-                        >
-                          {(item) => (
-                            <SelectItem key={item.key} textValue={item.label}>
-                              {item.label}
-                            </SelectItem>
-                          )}
-                        </Select>
-                        <Select
-                          aria-label="Size"
-                          className="max-w-36"
-                          items={CAPTION_CONFIG.instagram.size}
-                          onChange={formik.handleChange}
-                          name="size"
-                          value={formik.values.size}
-                          defaultSelectedKeys={['short']}
-                          variant="bordered"
-                          radius="full"
-                        >
-                          {(item) => (
-                            <SelectItem key={item.key} textValue={item.label}>
-                              {item.label}
-                            </SelectItem>
-                          )}
-                        </Select>
-                      </div>
-                      <Tooltip
-                        content={
-                          formik.values.regenerateCount > 0
-                            ? 'Regenerate'
-                            : 'Generate'
-                        }
-                      >
-                        <Button
-                          variant="solid"
-                          radius="full"
-                          isIconOnly
-                          className="bg-foreground text-background"
-                          onPress={() => formik.handleSubmit()}
-                          isLoading={formik.isSubmitting}
-                        >
-                          <Icon
-                            icon={
-                              formik.values.regenerateCount > 0
-                                ? 'solar:refresh-bold'
-                                : 'line-md:arrow-up'
-                            }
-                            width={20}
-                          />
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  </>
-                )}
-                {formik.values.response && (
-                  <Snippet symbol="" className="mt-4 w-full">
-                    <p className="whitespace-pre-wrap">
-                      {formik.values.response}
-                    </p>
-                  </Snippet>
-                )}
-              </div>
-            </Tab>
-            <Tab
-              key="linkedin"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:linkedin" />
-                  <span>LinkedIn</span>
-                </div>
-              }
-            >
-              <div className="min-h-36 rounded-b-xl rounded-tr-xl bg-background p-4">
-                Coming Soon...
-              </div>
-            </Tab>
-            <Tab
-              key="twitter"
-              title={
-                <div className="flex items-center space-x-2">
-                  <Icon icon="skill-icons:twitter" />
-                  <span>Twitter</span>
-                </div>
-              }
-            >
-              <div className="min-h-36 rounded-b-xl rounded-tr-xl bg-background p-4">
-                Coming Soon...
-              </div>
-            </Tab>
-          </Tabs>
-        </CardBody>
-      </Card>
+                  <path
+                    d="M6 12L10 8L6 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+
+            {/* Hero content */}
+            <div className="space-y-6">
+              <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+                Web3 Hosting
+                <br />
+                Made Simple
+              </h1>
+              <p className="text-lg text-gray-400">
+                No more complicated setups. Just fast, secure Web3 hosting.
+              </p>
+              <Button className="rounded-full bg-primary px-8 text-black hover:bg-primary/90">
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </div>
+        <style jsx>{`
+          @keyframes glow {
+            0% {
+              text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+              text-shadow:
+                0 0 10px rgba(255, 255, 255, 0.7),
+                0 0 15px rgba(255, 255, 255, 0.5);
+            }
+            100% {
+              text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+          }
+
+          .hover\\:glow:hover {
+            animation: glow 1.5s ease-in-out infinite;
+          }
+        `}</style>
+      </main>
     </div>
   );
 }
