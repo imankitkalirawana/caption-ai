@@ -1,3 +1,4 @@
+'use server';
 import {
   GoogleGenerativeAI,
   HarmCategory,
@@ -7,8 +8,6 @@ import {
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey as string);
 
-// Use gemini-1.5-flash for both text and image processing
-// This model supports both text-only and multimodal inputs
 const model = genAI.getGenerativeModel({
   model: 'gemini-1.5-flash'
 });
@@ -40,51 +39,33 @@ const safetySettings = [
   }
 ];
 
-// Get the system prompt for the chatbot
-async function getSystemPrompt() {
-  return [
-    {
-      role: 'user',
-      parts: [
-        {
-          text: 'You are an AI assistant specialized in generating creative and engaging content. Your task is to create short, catchy Instagram captions with relevant hashtags. Each response should contain exactly three variations in the following format:\n1. <caption here>  \nEnsure captions are concise, engaging, and resonate with developers, tech enthusiasts, and entrepreneurs. Maintain a modern and friendly tone.'
-        }
-      ]
-    },
-    {
-      role: 'model',
-      parts: [
-        {
-          text: "Okay, I'm ready to generate some catchy Instagram captions! Let's get coding!"
-        }
-      ]
-    }
-  ];
-}
+const history: string[] = [];
 
-// Text-only chat
-export async function generateResponse(query: string) {
-  const history = await getSystemPrompt();
+export async function generateResponseWithImage({
+  imageBuffer,
+  mimeType,
+  size = 'sm'
+}: {
+  imageBuffer: Buffer;
+  mimeType: string;
+  size?: 'sm' | 'md' | 'lg';
+}) {
+  const sizeMap = {
+    sm: '5',
+    md: '10',
+    lg: '15'
+  };
 
-  const chatSession = model.startChat({
-    generationConfig,
-    safetySettings,
-    history
-  });
+  let systemPrompt = `You are an AI specialized in generating short, catchy Instagram captions. 
+  Each response must contain exactly one caption in the format:
 
-  const result = await chatSession.sendMessage(query);
-  return result.response.text();
-}
+ <caption here>
+  #hashtag1 #hashtag2 #hashtag3
 
-// Chat with image support
-export async function generateResponseWithImage(
-  query: string,
-  imageBuffer: Buffer,
-  mimeType: string
-) {
-  const history = await getSystemPrompt();
+  Do not include any other text, explanations, or greetings. Ensure the captions are engaging, concise, include relevant hashtags.
+  caption should be approximately ${sizeMap[size]} words long excluding hashtags.
+  `;
 
-  // Create image part
   const imagePart = {
     inlineData: {
       data: imageBuffer.toString('base64'),
@@ -92,43 +73,30 @@ export async function generateResponseWithImage(
     }
   };
 
-  // Create message parts with both text and image
-  const messageParts = [];
-
-  // Add image first
-  messageParts.push(imagePart);
-
-  // Add text if provided
-  if (query.trim()) {
-    messageParts.push({ text: query });
-  } else {
-    messageParts.push({ text: 'What can you tell me about this image?' });
+  if (history.length > 0) {
+    systemPrompt += `\n\n${history.join('\n\n')}` + '\nRegenerate the caption';
   }
 
-  try {
-    console.log(
-      `Processing image of type ${mimeType} with model: gemini-1.5-flash`
-    );
+  console.log(systemPrompt);
 
+  const userMessage = [imagePart, { text: systemPrompt }];
+
+  try {
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: messageParts }],
+      contents: [{ role: 'user', parts: userMessage }],
       generationConfig,
       safetySettings
     });
 
-    const response = result.response;
-    return response.text();
+    history.push(result.response.text());
+
+    return result.response.text();
   } catch (error: any) {
     console.error('Error generating response with image:', error);
 
-    // Provide more detailed error information
-    if (
-      error.message &&
-      typeof error.message === 'string' &&
-      error.message.includes('models/')
-    ) {
+    if (error.message?.includes('models/')) {
       throw new Error(
-        `Model error: ${error.message}. Please check your API key and model availability.`
+        `Model error: ${error.message}. Check API key and model availability.`
       );
     } else if (error.status) {
       throw new Error(

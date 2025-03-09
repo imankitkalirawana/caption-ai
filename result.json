@@ -1,0 +1,58 @@
+{
+  "response": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "That's a beautiful nighttime long shot!  It appears to be a view from a high vantage point, possibly a mountain or hill, overlooking a city at night. The city lights are scattered below, creating a sparkling effect against the dark landscape. The sky shows a gradient of colors, from deep blue at the top to a soft pinkish-orange near the horizon, suggesting either twilight or dawn.\n\nThe overall mood is serene and peaceful, with a sense of vastness and quiet contemplation.\n"
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "safetyRatings": [
+          {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "probability": "NEGLIGIBLE"
+          },
+          {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "probability": "NEGLIGIBLE"
+          },
+          {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "probability": "NEGLIGIBLE"
+          },
+          {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "probability": "NEGLIGIBLE"
+          }
+        ],
+        "avgLogprobs": -0.19239265441894532
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 333,
+      "candidatesTokenCount": 100,
+      "totalTokenCount": 433,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 75
+        },
+        {
+          "modality": "IMAGE",
+          "tokenCount": 258
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 100
+        }
+      ]
+    },
+    "modelVersion": "gemini-1.5-flash"
+  }
+}

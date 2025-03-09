@@ -3,10 +3,14 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Button, Textarea } from '@heroui/react';
+import {
+  Dropzone,
+  DropzoneContent,
+  DropzoneEmptyState
+} from '@/components/ui/dropzone';
 
 export default function Page() {
   const [image, setImage] = useState<File | null>(null);
-  const [message, setMessage] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -28,21 +32,14 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    if (!message && !image) {
-      setError('Please enter a message or upload an image');
-      return;
-    }
-
     setIsLoading(true);
     setError('');
 
     try {
       const formData = new FormData();
-      if (message) formData.append('message', message);
       if (image) formData.append('image', image);
 
       console.log('Submitting form with:', {
-        message: message || '(none)',
         hasImage: !!image
       });
 
@@ -58,13 +55,6 @@ export default function Page() {
       }
 
       setResponse(data.response);
-
-      // Clear form after successful submission
-      if (response.ok) {
-        setMessage('');
-        setImage(null);
-        setImagePreview(null);
-      }
     } catch (err) {
       console.error('Error in chat submission:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -77,15 +67,19 @@ export default function Page() {
     <div className="container mx-auto max-w-3xl p-4">
       <h1 className="mb-6 text-2xl font-bold">Chat with Bhuneshvar</h1>
 
-      <div className="mb-6 flex flex-col gap-4">
-        <Textarea
-          placeholder="Type your message here..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          minRows={3}
-          className="w-full"
-        />
+      <Dropzone
+        maxSize={1024 * 1024 * 10}
+        maxFiles={1}
+        accept={{ 'image/*': [] }}
+        // onDrop={handleDrop}
+        // src={files}
+        onError={console.error}
+      >
+        <DropzoneEmptyState />
+        <DropzoneContent />
+      </Dropzone>
 
+      <div className="mb-6 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <label className="text-sm">Upload an image (optional)</label>
           <input
@@ -127,7 +121,7 @@ export default function Page() {
           isLoading={isLoading}
           color="primary"
           className="w-full"
-          disabled={(!message && !image) || isLoading}
+          disabled={isLoading}
         >
           {isLoading ? 'Processing...' : 'Send'}
         </Button>
