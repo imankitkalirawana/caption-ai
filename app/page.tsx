@@ -17,8 +17,11 @@ export default function Page() {
             >
               <Chip color="primary">New</Chip>
               <span className="flex items-center gap-2">
-                Introducing Divinely Store: One stop to for all your design &
-                development needs.
+                <span className="hidden sm:block">
+                  Introducing Divinely Store: One stop to for all your design &
+                  development needs.
+                </span>
+                <span className="block sm:hidden">Divinely Store</span>
                 <svg
                   width="16"
                   height="16"

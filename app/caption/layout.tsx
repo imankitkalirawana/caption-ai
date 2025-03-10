@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center px-4">
+    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden px-4">
       <div className="absolute inset-0 left-[30%] top-[40%] size-64 bg-green-400 bg-[size:20px_20px] opacity-50 blur-[100px]"></div>
       <div className="absolute inset-0 left-[50%] top-1/2 size-64 bg-fuchsia-400 bg-[size:20px_20px] opacity-50 blur-[100px]"></div>
 

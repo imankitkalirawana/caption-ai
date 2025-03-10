@@ -6,7 +6,7 @@ import { Providers } from './providers';
 import Navbar from '@/components/navbar';
 
 export const metadata: Metadata = {
-  title: 'Caption AI',
+  title: 'Caption AI - Divinely Developer',
   description:
     'Caption AI by Divinely Developer generates perfect captions for Instagram, LinkedIn, and Twitter (X) using advanced AI. Get engaging, creative, and trending captions in seconds!',
   keywords:
