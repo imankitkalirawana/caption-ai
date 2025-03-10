@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import Sonner from '@/components/providers';
 import { Providers } from './providers';
 import Navbar from '@/components/navbar';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const metadata: Metadata = {
   title: 'Caption AI - Divinely Developer',
@@ -44,9 +45,11 @@ export default async function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="light">
             <Navbar />
             {children}
+
             <Sonner />
           </ThemeProvider>
         </Providers>
+        <GoogleAnalytics gaId="G-ZEQM457NLW" />
       </body>
     </html>
   );

@@ -79,6 +79,7 @@ export async function generateResponseWithImage({
   The caption should be in ${tone} tone.
   ${prompt ? `Prompt: ${prompt}` : ''}
   ${hashtags ? `Include ${hashtags} hashtags` : ''}
+  The response should be abstract and creative in simple and easy to understand language with no complex words.
   `;
 
   const imagePart = {
