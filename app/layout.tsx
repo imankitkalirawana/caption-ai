@@ -5,6 +5,7 @@ import Sonner from '@/components/providers';
 import { Providers } from './providers';
 import Navbar from '@/components/navbar';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Caption AI - Divinely Developer',
@@ -50,6 +51,11 @@ export default async function RootLayout({
           </ThemeProvider>
         </Providers>
         <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID as string} />
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id={process.env.UMAMI_WEBSITE_ID as string}
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
