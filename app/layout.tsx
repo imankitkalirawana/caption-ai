@@ -49,7 +49,7 @@ export default async function RootLayout({
             <Sonner />
           </ThemeProvider>
         </Providers>
-        <GoogleAnalytics gaId="G-ZEQM457NLW" />
+        <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_ID as string} />
       </body>
     </html>
   );
